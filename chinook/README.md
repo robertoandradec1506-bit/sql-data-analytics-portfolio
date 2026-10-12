@@ -13,12 +13,7 @@ The project includes **9 selected SQL queries** designed to demonstrate practica
 * Analyze invoice distribution across countries.
 * Compare average track prices across music genres.
 * Evaluate revenue associated with Sales Support Agents.
-* Examine the number of tracks included in playlists.
-* Compare invoice activity and revenue across selected years.
-* Identify invoices with above-average values.
-* Determine which customers generate the highest total spending.
-* Calculate the average number of tracks purchased per customer.
-* Analyze monthly revenue trends throughout 2009.
+
 
 ## Tools & Technologies
 
@@ -26,8 +21,27 @@ The project includes **9 selected SQL queries** designed to demonstrate practica
 * **SQLite**
 * **Chinook relational database**
 
+## Database Overview
+
+The Chinook database represents a digital music store and contains information about customers, employees, invoices, tracks, albums, artists, genres, and playlists.
+
+This project focuses primarily on the following tables:
+
+| Table            | Purpose                                                  |
+| ---------------- | -------------------------------------------------------- |
+| `customers`      | Customer information and assigned Sales Support Agents   |
+| `employees`      | Employee details and organizational roles                |
+| `invoices`       | Invoice dates, billing countries, and total amounts      |
+| `invoice_items`  | Individual items and quantities associated with invoices |
+| `tracks`         | Music track information and unit prices                  |
+| `genres`         | Music genre categories                                   |
+| `playlists`      | Playlist information                                     |
+| `playlist_track` | Relationship between playlists and tracks                |
+
+
 ## Author
 
 **Roberto Andrade**
 
 Aspiring Data Analyst | SQL | Excel | Power Query | Power BI
+
