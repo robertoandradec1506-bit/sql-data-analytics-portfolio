@@ -50,5 +50,3 @@ These tables provide the foundation for analyzing customer activity, product sal
 **Roberto Andrade**
 
 Aspiring Data Analyst | SQL | Excel | Power Query | Power BI
-
-This project is part of my data analytics portfolio, showcasing my development of practical SQL skills and my ability to approach business questions through data.
