@@ -1,0 +1,197 @@
+1. Monthly Revenue Comparison by Product Category
+-- =====================================================
+-- BUSINESS QUESTION:
+-- How did monthly revenue compare between the Beverages
+-- and Confections categories throughout 1997?
+--
+-- SKILLS:
+-- JOIN, CASE WHEN, SUM, GROUP BY, ORDER BY, strftime,
+-- Date Filtering, Conditional Aggregation
+-- =====================================================
+SELECT
+strftime('%m',i.OrderDate) AS "Month",
+ROUND(SUM(
+  CASE
+  	WHEN c.CategoryName = 'Beverages'
+	THEN i.ExtendedPrice
+  ELSE 0
+ END
+ ),2) AS "Beverages",
+ 
+ROUND(SUM(
+  CASE
+  WHEN c.CategoryName = 'Confections'
+	THEN i.ExtendedPrice
+  ELSE 0
+END
+),2) AS "Confections"
+FROM Invoices i
+JOIN Products p
+	ON i.ProductID = p.ProductID
+JOIN Categories c
+	ON p.CategoryID = c.CategoryID
+WHERE i.OrderDate >= '1997-01-01'
+AND i.OrderDate < '1998-01-01'
+GROUP BY strftime('%m',i.OrderDate)
+ORDER BY strftime('%m',i.OrderDate) ASC;
+
+
+
+2. Revenue by Employee 
+-- =====================================================
+-- BUSINESS QUESTION:
+-- How much total revenue did each employee generate?
+--
+-- SKILLS:
+-- JOIN, SUM, ROUND, GROUP BY, ORDER BY
+-- =====================================================
+SELECT
+e.EmployeeID AS ID,
+e.FirstName||' '||e.LastName AS "Employee",
+ROUND(SUM(i.ExtendedPrice),2) AS "Total"
+FROM Employees e
+JOIN Orders o
+	ON e.EmployeeID = o.EmployeeID
+JOIN Invoices i
+	ON o.OrderID = i.OrderID
+GROUP BY e.EmployeeID
+ORDER BY e.EmployeeID ASC;
+
+
+ 
+3. Top 5 Products by Units Sold
+-- =====================================================
+-- BUSINESS QUESTION:
+-- Which five products had the highest sales volume
+-- based on the total number of units sold?
+--
+-- SKILLS:
+-- JOIN, SUM, GROUP BY, ORDER BY, LIMIT
+-- =====================================================
+SELECT
+p.ProductName AS "Product",
+SUM(od.Quantity) AS "Quantity"
+FROM Products p
+JOIN "Order Details" od
+	ON p.ProductID = od.ProductID
+GROUP BY p.ProductID
+ORDER BY SUM(od.Quantity)  DESC
+LIMIT 5;
+ 
+4. Customers Without Orders
+-- =====================================================
+-- BUSINESS QUESTION:
+-- Which customers have never placed an order?
+--
+-- SKILLS:
+-- Correlated Subqueries, NOT EXISTS
+-- =====================================================
+SELECT Customers.ContactName
+ FROM Customers
+ WHERE NOT EXISTS(
+	 SELECT 1
+	 FROM Orders
+ WHERE Customers.CustomerID = Orders.CustomerID);
+
+
+
+
+ 
+5. Employee Reporting Structure
+-- =====================================================
+-- BUSINESS QUESTION:
+-- Who is the direct manager of each employee, including
+-- employees who do not report to anyone?
+--
+-- SKILLS:
+-- LEFT JOIN, Self Join, Table Aliases, NULL Handling
+-- =====================================================
+SELECT
+e.FirstName||' '||e.LastName AS "Employee",
+j.LastName AS "Reports To"
+FROM Employees AS e
+ LEFT JOIN Employees AS j
+ ON e.ReportsTo = j.EmployeeID;
+ 
+6. Suppliers with More Than Four Products
+-- =====================================================
+-- BUSINESS QUESTION:
+-- Which suppliers provide more than four products?
+--
+-- SKILLS:
+-- JOIN, COUNT, GROUP BY, HAVING
+-- =====================================================
+SELECT
+s.CompanyName AS "Supplier",
+COUNT(p.ProductName) AS "Products"
+FROM Suppliers s
+JOIN Products p
+ON s.SupplierID = p.SupplierID
+GROUP BY s.CompanyName
+HAVING COUNT(p.ProductName) > 4;
+
+ 
+
+7. Supplier Ranking by Products Sold 
+-- =====================================================
+-- BUSINESS QUESTION:
+-- Which suppliers have the highest number of distinct
+-- products associated with sales transactions?
+--
+-- SKILLS:
+-- JOIN, COUNT, DISTINCT, GROUP BY, ORDER BY
+-- =====================================================
+SELECT
+s.CompanyName AS "Supplier",
+COUNT(DISTINCT p.ProductID) AS "Products"
+FROM Suppliers s
+JOIN Products p
+	ON s.SupplierID = p.SupplierID
+JOIN "Order Details" od
+	ON p.ProductID = od.ProductID
+GROUP BY s.SupplierID
+ORDER BY COUNT(DISTINCT p.ProductID) DESC;
+
+
+
+8. Busiest Order Date in 1998
+-- =====================================================
+-- BUSINESS QUESTION:
+-- Which date had the highest number of orders in 1998?
+--
+-- SKILLS:
+-- COUNT, Date Filtering, GROUP BY, ORDER BY, LIMIT
+-- =====================================================
+
+SELECT
+OrderDate AS "Date",
+COUNT(OrderID) AS "Orders"
+FROM Orders
+WHERE "Date" >= '1998-01-01'
+AND "Date" < '1999-01-01'
+GROUP BY "Date"
+ORDER BY "Orders" DESC
+LIMIT 1;
+
+ 
+
+9. Annual Revenue for the Condiments Category
+-- =====================================================
+-- BUSINESS QUESTION:
+-- How did annual revenue evolve for the Condiments
+-- product category over time?
+--
+-- SKILLS:
+-- JOIN, SUM, ROUND, GROUP BY, strftime,
+-- Category Filtering, Time-Based Analysis
+-- =====================================================
+SELECT
+strftime('%Y',i.OrderDate) AS "Year",
+ROUND(SUM(i.ExtendedPrice),2) AS "Total"
+FROM Invoices i
+JOIN Products p
+	ON i.ProductID = p.ProductID
+JOIN Categories c
+	ON p.CategoryID = c.CategoryID
+WHERE c.CategoryName = 'Condiments'
+GROUP BY strftime('%Y',i.OrderDate);
